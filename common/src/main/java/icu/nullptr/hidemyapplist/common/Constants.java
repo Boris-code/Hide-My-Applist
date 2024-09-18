@@ -28,6 +28,7 @@ public class Constants {
             "android.media",
             "android.uid.system",
             "android.uid.shell",
+            "com.android.shell",
             "android.uid.systemui",
             "com.android.permissioncontroller",
             "com.android.providers.downloads",
@@ -37,5 +38,10 @@ public class Constants {
             "com.android.providers.settings",
             "com.google.android.webview",
             "com.google.android.providers.media.module"
+    );
+
+    public static final Set<String> globalHiddenApps = Set.of(
+            APP_PACKAGE_NAME,
+            "com.youdao.note"
     );
 }

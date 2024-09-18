@@ -130,6 +130,11 @@ class HMAService(val pms: IPackageManager) : IHMAService.Stub() {
         if (caller in Constants.packagesShouldNotHide || query in Constants.packagesShouldNotHide) return false
         if ((caller == Constants.GMS_PACKAGE_NAME || caller == Constants.GSF_PACKAGE_NAME) && query == Constants.APP_PACKAGE_NAME) return false // If apply hide on gms, hma app will crash 😓
         if (caller in query) return false
+
+        // if query is hide in global, return true, but exclude caller
+        if (caller in Constants.globalHiddenApps) return false
+        if (query in Constants.globalHiddenApps && caller !in systemApps) return true
+
         val appConfig = config.scope[caller] ?: return false
         if (appConfig.useWhitelist && appConfig.excludeSystemApps && query in systemApps) return false
 
