@@ -42,6 +42,7 @@ public class Constants {
 
     public static final Set<String> globalHiddenApps = Set.of(
             APP_PACKAGE_NAME,
-            "com.youdao.note"
+            "com.youdao.note",
+            "com.da.xp"
     );
 }
