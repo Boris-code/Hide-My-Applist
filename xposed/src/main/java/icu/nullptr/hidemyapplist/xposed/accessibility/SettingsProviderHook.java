@@ -52,7 +52,6 @@ public class SettingsProviderHook {
             case "development_settings_enabled":
             case "adb_enabled":
             case "adb_wifi_enabled":
-                if (TextUtils.isEmpty(caller)) return;
                 XposedHelpers.setObjectField(param.getResult(), "value", "0");
                 LogUtils.e(TAG, "[SettingsProvider]: " + param.method.getName() + " caller: " + caller + "a : " + Arrays.toString(param.args) + " res: " + param.getResult());
                 break;

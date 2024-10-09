@@ -5,6 +5,8 @@ import de.robv.android.xposed.XposedBridge
 import java.text.SimpleDateFormat
 import java.util.*
 
+var LOG_PREFIX = "HideEnv.";
+
 private fun parseLog(level: Int, tag: String, msg: String, cause: Throwable? = null) = buildString {
     val levelStr = when (level) {
         Log.DEBUG -> "DEBUG"
@@ -14,7 +16,7 @@ private fun parseLog(level: Int, tag: String, msg: String, cause: Throwable? = n
         else -> "?????"
     }
     val date = SimpleDateFormat("MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
-    append("[$levelStr] $date ($tag) $msg")
+    append("[$levelStr] $date ($LOG_PREFIX$tag) $msg")
     if (!endsWith('\n')) append('\n')
     if (cause != null) append(Log.getStackTraceString(cause))
     if (!endsWith('\n')) append('\n')

@@ -66,7 +66,6 @@ class XposedEntry : IXposedHookZygoteInit, IXposedHookLoadPackage {
             }
 
         } else if (lpparam.packageName == "com.android.providers.settings") {
-            EzXHelperInit.initHandleLoadPackage(lpparam)
             logI(TAG, "Hook entry " + lpparam.packageName)
 
             GlobalContext.lpparam = lpparam

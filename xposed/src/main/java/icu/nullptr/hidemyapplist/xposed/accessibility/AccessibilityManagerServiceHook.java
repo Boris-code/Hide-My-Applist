@@ -29,7 +29,7 @@ public class AccessibilityManagerServiceHook {
 
             switch (param.method.getName()) {
                 case "getEnabledAccessibilityServiceList":
-                    if (param.getResult() == null) return;
+                    if (param.getResult() == null) break;
                     param.setResult(new ArrayList<AccessibilityServiceInfo>());
                     LogUtils.i(TAG, "[AccessibilityManagerService]: " + caller + " method " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
                     break;
@@ -47,12 +47,13 @@ public class AccessibilityManagerServiceHook {
                 case "getClientStateLocked":
                     param.setResult(0);
                     LogUtils.i(TAG, "[AccessibilityUserState]: " + caller + " method " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
+                    break;
                 case "isHandlingAccessibilityEventsLocked":
                     param.setResult(false);
                     LogUtils.i(TAG, "[AccessibilityUserState]: " + caller + " method " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
                     break;
                 default:
-                    LogUtils.v(TAG, "[AccessibilityUserState]: " + caller + " method: " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
+                    // LogUtils.v(TAG, "[AccessibilityUserState]: " + caller + " method: " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
                     break;
             }
         });
