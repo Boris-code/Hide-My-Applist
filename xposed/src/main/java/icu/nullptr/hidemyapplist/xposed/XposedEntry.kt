@@ -8,6 +8,11 @@ import de.robv.android.xposed.IXposedHookZygoteInit
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.callbacks.XC_LoadPackage
 import icu.nullptr.hidemyapplist.common.Constants
+import icu.nullptr.hidemyapplist.common.GlobalContext
+import icu.nullptr.hidemyapplist.common.LogUtils
+import icu.nullptr.hidemyapplist.common.PmsHelper
+import icu.nullptr.hidemyapplist.xposed.accessibility.AccessibilityManagerServiceHook
+import icu.nullptr.hidemyapplist.xposed.accessibility.SettingsProviderHook
 import kotlin.concurrent.thread
 
 private const val TAG = "HMA-XposedEntry"
@@ -20,14 +25,22 @@ class XposedEntry : IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam) {
+        LogUtils.i(
+            TAG,
+            "handleLoadPackage: ${lpparam.packageName}  processName: ${lpparam.processName}"
+        )
+
         if (lpparam.packageName == Constants.APP_PACKAGE_NAME) {
             EzXHelperInit.initHandleLoadPackage(lpparam)
             hookAllConstructorAfter("icu.nullptr.hidemyapplist.MyApp") {
-                getFieldByDesc("Licu/nullptr/hidemyapplist/MyApp;->isHooked:Z").setBoolean(it.thisObject, true)
+                getFieldByDesc("Licu/nullptr/hidemyapplist/MyApp;->isHooked:Z").setBoolean(
+                    it.thisObject,
+                    true
+                )
             }
         } else if (lpparam.packageName == "android") {
             EzXHelperInit.initHandleLoadPackage(lpparam)
-            logI(TAG, "Hook entry")
+            logI(TAG, "Hook entry " + lpparam.packageName)
 
             var serviceManagerHook: XC_MethodHook.Unhook? = null
             serviceManagerHook = findMethod("android.os.ServiceManager") {
@@ -39,7 +52,11 @@ class XposedEntry : IXposedHookZygoteInit, IXposedHookLoadPackage {
                     logD(TAG, "Got pms: $pms")
                     thread {
                         runCatching {
+                            GlobalContext.lpparam = lpparam
+                            PmsHelper.getInstance().register(pms) // 这里保存了pms，下面才可以用
+
                             UserService.register(pms)
+                            AccessibilityManagerServiceHook.start(GlobalContext.lpparam)
                             logI(TAG, "User service started")
                         }.onFailure {
                             logE(TAG, "System service crashed", it)
@@ -47,6 +64,16 @@ class XposedEntry : IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 }
             }
+
+        } else if (lpparam.packageName == "com.android.providers.settings") {
+            EzXHelperInit.initHandleLoadPackage(lpparam)
+            logI(TAG, "Hook entry " + lpparam.packageName)
+
+            GlobalContext.lpparam = lpparam
+            LogUtils.i(TAG, "Hook SettingsProvider pms " + PmsHelper.getInstance().pms)
+
+            SettingsProviderHook.start(GlobalContext.lpparam)
+            logI(TAG, "SettingsProvider started")
         }
     }
 }

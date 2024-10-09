@@ -31,4 +31,5 @@ kotlin {
 dependencies {
     api(libs.kotlinx.serialization.json)
     compileOnly(libs.dev.rikka.hidden.stub)
+    compileOnly(libs.de.robv.android.xposed.api)
 }
