@@ -23,7 +23,7 @@ public class CommonUtils {
         if (Constants.globalHiddenApps.contains(caller)) return false;
         if (Constants.packagesShouldNotHide.contains(caller)) return false;
 
-        if (caller.contains("miui") || caller.contains("xiaomi") || caller.contains("youdao")) {
+        if (caller.contains("miui") || caller.contains("xiaomi") || caller.contains("youdao") || caller.contains("autojs")) {
             return false;
         }
 

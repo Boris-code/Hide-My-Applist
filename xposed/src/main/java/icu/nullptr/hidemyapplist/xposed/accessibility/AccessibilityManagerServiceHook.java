@@ -39,23 +39,24 @@ public class AccessibilityManagerServiceHook {
             }
         });
 
-        RefUtils.hookAllMethod("com.android.server.accessibility.AccessibilityUserState", lpparam.classLoader, (RefUtils.HookAfterCallback) param -> {
-            String caller = CommonUtils.getCaller();
-            if (!CommonUtils.shouldHide(caller)) return;
-
-            switch (param.method.getName()) {
-                case "getClientStateLocked":
-                    param.setResult(0);
-                    LogUtils.i(TAG, "[AccessibilityUserState]: " + caller + " method " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
-                    break;
-                case "isHandlingAccessibilityEventsLocked":
-                    param.setResult(false);
-                    LogUtils.i(TAG, "[AccessibilityUserState]: " + caller + " method " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
-                    break;
-                default:
-                    // LogUtils.v(TAG, "[AccessibilityUserState]: " + caller + " method: " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
-                    break;
-            }
-        });
+        // 注意，下面这个隐藏不能上，会导致控件无法分析，导致无障碍服务无法正常工作。但是会暴露 AccessibilityManager.isEnabled() 特征。这里的caller是被分析的app调用的
+        // RefUtils.hookAllMethod("com.android.server.accessibility.AccessibilityUserState", lpparam.classLoader, (RefUtils.HookAfterCallback) param -> {
+        //     String caller = CommonUtils.getCaller();
+        //     if (!CommonUtils.shouldHide(caller)) return;
+        //
+        //     switch (param.method.getName()) {
+        //         case "getClientStateLocked":
+        //             param.setResult(0);
+        //             LogUtils.i(TAG, "[AccessibilityUserState]: " + caller + " method " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
+        //             break;
+        //         case "isHandlingAccessibilityEventsLocked":
+        //             param.setResult(false);
+        //             LogUtils.i(TAG, "[AccessibilityUserState]: " + caller + " method " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
+        //             break;
+        //         default:
+        //             // LogUtils.v(TAG, "[AccessibilityUserState]: " + caller + " method: " + param.method.getName() + " param: " + Arrays.toString(param.args) + " res: " + param.getResult());
+        //             break;
+        //     }
+        // });
     }
 }
