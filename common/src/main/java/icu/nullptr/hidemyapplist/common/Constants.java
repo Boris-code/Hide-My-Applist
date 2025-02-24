@@ -37,7 +37,8 @@ public class Constants {
             "com.android.providers.media.module",
             "com.android.providers.settings",
             "com.google.android.webview",
-            "com.google.android.providers.media.module"
+            "com.google.android.providers.media.module",
+            "com.android.phone"
     );
 
     public static final Set<String> globalHiddenApps = Set.of(
